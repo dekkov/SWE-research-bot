@@ -1,0 +1,23 @@
+{
+  "companies": [
+    {
+      "name": "OpenAI",
+      "careers_url": "https://openai.com/careers/search/?q=",
+      "active": true,
+      "selectors": {
+        "_comment": "Updated based on SELECTOR_FINDINGS.md (Dec 18, 2024)",
+        "job_link": "a[href^=\"/careers/\"][href$=\"/\"]",
+        "job_card": "div.border-b.border-primary-4",
+        "job_title": "a[href^=\"/careers/\"]",
+        "job_location": "a[href^=\"/careers/\"]",
+        "job_team": "a[href^=\"/careers/\"]",
+        "_note": "Job title, team, location are concatenated in link text - parse on detail page",
+        "detail_title": "h1",
+        "detail_description": ".prose, div.prose, [class*='prose']",
+        "detail_team": "[class*='team'], [class*='department']",
+        "detail_location": "[class*='location']",
+        "detail_type": "[class*='employment'], [class*='type']"
+      }
+    }
+  ]
+}

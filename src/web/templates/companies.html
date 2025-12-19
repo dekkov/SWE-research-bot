@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Companies - SWE Job Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <nav>
+        <h1>🔍 SWE Job Research Bot</h1>
+        <a href="/">Home</a>
+        <a href="/jobs">Jobs</a>
+    </nav>
+
+    <main>
+        <section>
+            <h2>Companies</h2>
+            <div id="companies-container">Loading...</div>
+        </section>
+    </main>
+
+    <script>
+        fetch('/api/companies/')
+            .then(r => r.json())
+            .then(data => {
+                const html = data.companies.map(c => `
+                    <div class="company-card">
+                        <h3>${c.name}</h3>
+                        <p>${c.careers_url}</p>
+                        <p>Last scraped: ${c.last_scraped || 'Never'}</p>
+                        <button onclick="scrapeCompany('${c.name}')">Scrape Now</button>
+                    </div>
+                `).join('');
+                document.getElementById('companies-container').innerHTML = html;
+            });
+
+        async function scrapeCompany(name) {
+            alert(`Starting scrape for ${name}... This may take a few minutes.`);
+            const response = await fetch('/api/companies/scrape', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({company_name: name})
+            });
+            const data = await response.json();
+            alert(`Scrape completed for ${name}!`);
+            location.reload();
+        }
+    </script>
+</body>
+</html>

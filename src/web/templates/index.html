@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SWE Job Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <nav>
+        <h1>🔍 SWE Job Research Bot</h1>
+        <a href="/jobs">Browse Jobs</a>
+        <a href="/companies">Companies</a>
+    </nav>
+
+    <main>
+        <section id="stats">
+            <h2>Dashboard</h2>
+            <div id="stats-container">Loading...</div>
+        </section>
+    </main>
+
+    <script>
+        // Fetch and display stats
+        fetch('/api/jobs/stats')
+            .then(r => r.json())
+            .then(data => {
+                const html = `
+                    <div class="stat-card">
+                        <h3>Total Jobs</h3>
+                        <p class="stat-number">${data.total_jobs}</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Companies</h3>
+                        <p class="stat-number">${data.total_companies}</p>
+                    </div>
+                `;
+                document.getElementById('stats-container').innerHTML = html;
+            });
+    </script>
+</body>
+</html>

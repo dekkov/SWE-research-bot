@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Jobs - SWE Job Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <nav>
+        <h1>🔍 SWE Job Research Bot</h1>
+        <a href="/">Home</a>
+        <a href="/companies">Companies</a>
+    </nav>
+
+    <main>
+        <section>
+            <h2>Job Listings</h2>
+
+            <div class="filters">
+                <input type="text" id="tech-search" placeholder="Search tech stack (e.g., Python, Rust)">
+                <select id="level-filter">
+                    <option value="">All Levels</option>
+                    <option>Internship</option>
+                    <option>Entry-level</option>
+                    <option>Mid-level</option>
+                    <option>Senior</option>
+                    <option>Staff</option>
+                </select>
+                <button onclick="searchJobs()">Search</button>
+            </div>
+
+            <div id="jobs-container">Loading...</div>
+        </section>
+    </main>
+
+    <script>
+        function searchJobs() {
+            const tech = document.getElementById('tech-search').value;
+            const level = document.getElementById('level-filter').value;
+
+            const params = new URLSearchParams();
+            if (tech) params.append('tech', tech);
+            if (level) params.append('level', level);
+
+            fetch(`/api/search/?${params}`)
+                .then(r => r.json())
+                .then(data => {
+                    const html = data.results.map(item => {
+                        // Build tech stack badges
+                        const techBadges = item.tech_stack && item.tech_stack.length > 0
+                            ? `<div class="tech-stack">
+                                ${item.tech_stack.map(tech => `<span class="tech-badge">${tech}</span>`).join('')}
+                               </div>`
+                            : '';
+
+                        return `
+                            <div class="job-card">
+                                <h3>${item.job.title}</h3>
+                                <p><strong>${item.company_name}</strong> • ${item.job.location || 'Remote'}</p>
+                                <p>${item.job.experience_level || 'Not specified'}</p>
+                                ${techBadges}
+                                <a href="${item.job.job_url}" target="_blank">View Job</a>
+                            </div>
+                        `;
+                    }).join('');
+                    document.getElementById('jobs-container').innerHTML = html || '<p>No jobs found</p>';
+                });
+        }
+
+        // Load initial jobs
+        searchJobs();
+    </script>
+</body>
+</html>
